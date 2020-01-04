@@ -16,37 +16,38 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    void onCreateImportantWork() {
+        final boolean isMostRecent = VersionRetriever.isMostRecent(getApplicationContext());
+        MainActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (isMostRecent) {
+                    Toast.makeText(MainActivity.this, "Up to date", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Update available", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(MainActivity.this, AppUpdaterActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
+    }
+
+    //region  // unimportant boilerplate //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        doWork();
-
+        doUnimportantBoilerplate();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final boolean isMostRecent = VersionRetriever.isMostRecent(getApplicationContext());
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isMostRecent) {
-                            Toast.makeText(MainActivity.this, "Up to date", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(MainActivity.this, "Update available", Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(MainActivity.this, AppUpdaterActivity.class);
-                            startActivity(intent);
-                        }
-                    }
-                });
-
+                onCreateImportantWork();
             }
         }).start();
-
-
     }
 
-
-    private void doWork() {
+    private void doUnimportantBoilerplate() {
+        setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -81,4 +82,5 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    //endregion
 }

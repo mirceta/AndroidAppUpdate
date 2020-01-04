@@ -22,19 +22,7 @@ public class AppUpdaterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_app_updater);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
+        boilerplate();
 
         if (hasWriteExternalStoragePermission() && hasReadExternalStoragePermission()) {
             downloadAndInstallUpdate();
@@ -43,7 +31,6 @@ public class AppUpdaterActivity extends AppCompatActivity {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE, true);
         }
     }
-
 
     private void downloadAndInstallUpdate() {
         UpdateApp some = new UpdateApp();
@@ -76,6 +63,23 @@ public class AppUpdaterActivity extends AppCompatActivity {
     private boolean hasReadExternalStoragePermission() {
         return (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED);
+    }
+    //endregion
+
+    //region // boilerplate //
+    private void boilerplate() {
+        setContentView(R.layout.activity_app_updater);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
     }
     //endregion
 
