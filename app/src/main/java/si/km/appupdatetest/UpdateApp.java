@@ -28,12 +28,8 @@ public class UpdateApp extends AsyncTask<String,Void,Void> {
     @Override
     protected Void doInBackground(String... arg0) {
         try {
-            URL url = new URL(arg0[0]);
-            HttpURLConnection c = (HttpURLConnection) url.openConnection();
-            c.setRequestMethod("GET");
-            //c.setDoOutput(true);
-            c.connect();
 
+            HttpURLConnection c = prepareConnection(arg0[0]);
             execute(c);
 
         } catch (Exception e) {
@@ -47,7 +43,7 @@ public class UpdateApp extends AsyncTask<String,Void,Void> {
         String fileName = "update.apk";
         File directory = context.getExternalFilesDir(null);
         File file = new File(directory, fileName);
-        writeToFile(c, file.getAbsolutePath());
+        writeFromNetworkToFile(c, file.getAbsolutePath());
         Uri fileUri = Uri.fromFile(file);
         if (Build.VERSION.SDK_INT >= 24) {
             fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider",
@@ -61,7 +57,16 @@ public class UpdateApp extends AsyncTask<String,Void,Void> {
         context.startActivity(intent);
     }
 
-    private void writeToFile(HttpURLConnection c, String file) throws IOException {
+    private HttpURLConnection prepareConnection(String address) throws Exception {
+        URL url = new URL(address);
+        HttpURLConnection c = (HttpURLConnection) url.openConnection();
+        c.setRequestMethod("GET");
+        //c.setDoOutput(true);
+        c.connect();
+        return c;
+    }
+
+    private void writeFromNetworkToFile(HttpURLConnection c, String file) throws IOException {
         // write app
         FileOutputStream fos = new FileOutputStream(file);
         InputStream is = c.getInputStream();
