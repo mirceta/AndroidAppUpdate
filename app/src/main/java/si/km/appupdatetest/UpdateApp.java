@@ -34,7 +34,7 @@ public class UpdateApp extends AsyncTask<String,Void,Void> {
             //c.setDoOutput(true);
             c.connect();
 
-            method2(c);
+            execute(c);
 
         } catch (Exception e) {
             Log.e("UpdateAPP", "Update error! " + e.getMessage());
@@ -42,21 +42,7 @@ public class UpdateApp extends AsyncTask<String,Void,Void> {
         return null;
     }
 
-    private void method1(HttpURLConnection c) throws Exception {
-        File updateFile = new File(Environment.getExternalStorageDirectory() + "/download/si.km.appupdatetest.apk");
-        String AUTHORITY = "si.km.appupdatetest.provider";
-        Uri apkUri = FileProvider.getUriForFile(context, AUTHORITY, updateFile);
-
-        writeToFile(c, updateFile.getAbsolutePath());
-
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        apkUri = Uri.fromFile(updateFile);
-        intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION); // without this flag an
-        context.startActivity(intent);
-    }
-
-    private void method2(HttpURLConnection c) throws Exception {
+    private void execute(HttpURLConnection c) throws Exception {
 
         String fileName = "update.apk";
         File directory = context.getExternalFilesDir(null);

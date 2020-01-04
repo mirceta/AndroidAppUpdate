@@ -25,16 +25,20 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (!VersionRetriever.isMostRecent(getApplicationContext())) {
-                    MainActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                final boolean isMostRecent = VersionRetriever.isMostRecent(getApplicationContext());
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isMostRecent) {
+                            Toast.makeText(MainActivity.this, "Up to date", Toast.LENGTH_LONG).show();
+                        } else {
                             Toast.makeText(MainActivity.this, "Update available", Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(MainActivity.this, AppUpdaterActivity.class);
                             startActivity(intent);
                         }
-                    });
-                }
+                    }
+                });
+
             }
         }).start();
 
