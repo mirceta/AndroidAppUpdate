@@ -84,7 +84,7 @@ public class VersionRetriever {
         long latestVersion = -9219423;
         try {
             PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            latestVersion = pInfo.getLongVersionCode();
+            latestVersion = pInfo.versionCode;
             return latestVersion;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
