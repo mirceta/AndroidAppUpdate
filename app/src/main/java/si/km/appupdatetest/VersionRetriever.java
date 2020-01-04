@@ -1,5 +1,8 @@
 package si.km.appupdatetest;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import org.apache.commons.io.IOUtils;
@@ -19,26 +22,28 @@ public class VersionRetriever {
 
     static final String TAG = "VersionRetriever_K";
 
-    public VersionRetriever() {
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        String version = Get(GGlobals.CURRENT_VERSION_ADDRESS);
-                        int ver = Integer.parseInt(version);
-                        Log.d(TAG, "some");
-                    }
-                    catch (Exception ex) {
-                        Log.d(TAG, "some");
-                    }
-                }
-            }).start();
+    public static boolean isMostRecent(Context context) {
+
+        long appVersion = getAppVersion(context);
+        int latestVersion = Get();
+        if (appVersion < latestVersion)
+            return false;
+        return true;
     }
 
-    private static String Get(String url) throws IOException {
+    public static int Get() {
         try {
-            Log.d(TAG, "KURAC1");
+            String version = GetUrl(GGlobals.LATEST_VERSION_ADDRESS);
+            int ver = Integer.parseInt(version);
+            return ver;
+        } catch (Exception ex) {
+            return -1;
+        }
+    }
+
+    private static String GetUrl(String url) throws IOException {
+        try {
             CloseableHttpClient client = HttpClients.createDefault();
             HttpGet get = new HttpGet(url);
             get.addHeader("User-Agent", "Mozilla/5.0");
@@ -52,8 +57,6 @@ public class VersionRetriever {
                 e.printStackTrace();
             }
 
-            Log.d(TAG, "KURAC3");
-
             HttpEntity entity = null;
             if (response != null) {
                 entity = response.getEntity();
@@ -61,15 +64,12 @@ public class VersionRetriever {
                 Log.d(TAG, "response was empty");
             }
 
-            Log.d(TAG, "KURAC4");
-
             InputStream inputStream = null;
             try {
                 inputStream = entity.getContent();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Log.d(TAG, "KURAC5");
 
             String content = IOUtils.toString(inputStream, "UNICODE");
             Log.d(TAG, content);
@@ -78,6 +78,18 @@ public class VersionRetriever {
             Log.e(TAG, ex.getMessage() + ex.getStackTrace());
             throw ex;
         }
+    }
+
+    private static long getAppVersion(Context context) {
+        long latestVersion = -9219423;
+        try {
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            latestVersion = pInfo.getLongVersionCode();
+            return latestVersion;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return latestVersion;
     }
 
 }
